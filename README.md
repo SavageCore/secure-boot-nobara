@@ -39,12 +39,25 @@ The script will:
 - Enroll your DKMS/akmods MOK key if an Nvidia GPU was detected
 - Sign every unsigned EFI binary and kernel image
 
+## After updates
+
+- **Nvidia driver updates** - nothing to do. DKMS rebuilds and re-signs with
+  the same key you enrolled.
+- **Kernel updates** - nothing to do. sbctl's `91-sbctl.install` kernel hook
+  signs new kernels automatically.
+- **GRUB/shim updates** (`grub2-efi`, `shim-x64`) - **re-run the script**, or
+  just `sudo sbctl verify && sudo sbctl sign-all`. There's no dnf hook for
+  this, so a bootloader update can leave an unsigned binary behind and the
+  machine won't boot with Secure Boot on until it's re-signed.
+
 ## Notes
 
 - Works on other distributions too - swap the `dnf copr`/`dnf install` lines
   for your distro's sbctl install command (see the "Install" section of
   [sbctl](https://github.com/Foxboron/sbctl)).
 - Safe to re-run: already-enrolled keys and already-signed files are skipped.
+- `sudo sbctl verify` is the quick health check any time you're unsure
+  everything is still signed.
 
 ## Issues & contributions
 
